@@ -4,6 +4,7 @@ metadata:
   labels:
     app: hogarama
   name: grafana-dashboard
+  finalizers: []
 spec:
   json: |
     {
