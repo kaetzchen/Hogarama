@@ -1,9 +1,7 @@
 *.j2
 Chart.lock
-helm_prerequisites.sh
 scripts/
 secrets/
-
 
 # Patterns to ignore when building packages.
 # This supports shell glob matching, relative path matching, and
@@ -21,7 +19,6 @@ secrets/
 *.swp
 *.bak
 *.tmp
-*.orig
 *~
 # Various IDEs
 .project

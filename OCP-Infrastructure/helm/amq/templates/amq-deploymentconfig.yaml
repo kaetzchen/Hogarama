@@ -22,15 +22,15 @@ spec:
             - /home/jboss/cfg/entrypoint.sh
           env:
             - name: TZ
-              value: {{ .Values.timezone }}
+              value: {{ .Values.global.timezone }}
             - name: AMQ_TRUSTSTORE
               value: broker.ks
             - name: AMQ_TRUSTSTORE_PASSWORD
-              value: {{ .Values.deploymentconfig.amq_truststore_password }}
+              value: {{ .Values.hogarama.amq.deploymentconfig.amq_truststore_password }}
             - name: AMQ_KEYSTORE
               value: broker.ks
             - name: AMQ_KEYSTORE_PASSWORD
-              value: {{ .Values.deploymentconfig.amq_keystore_password }}
+              value: {{ .Values.hogarama.amq.deploymentconfig.amq_keystore_password }}
           envFrom:
             - secretRef:
                 name: amq-credentials
@@ -90,6 +90,6 @@ spec:
           - amq
         from:
           kind: ImageStreamTag
-          name: {{ .Values.deploymentconfig.imageStream.name }}:latest
+          name: {{ .Values.hogarama.amq.deploymentconfig.imageStream.name }}:latest
       type: ImageChange
 ...

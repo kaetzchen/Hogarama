@@ -16,7 +16,7 @@ spec:
   output:
     to:
       kind: ImageStreamTag
-      name: '{{ .Values.imageStream.name }}:latest'
+      name: '{{ .Values.hogarama.fluentd.imageStream.name }}:latest'
   postCommit: {}
   resources: {}
   runPolicy: Serial
@@ -31,7 +31,7 @@ spec:
     dockerStrategy:
       from:
         kind: ImageStreamTag
-        name: '{{ .Values.imageStream.base.name }}:{{ .Values.imageStream.base.tag }}'
+        name: '{{ .Values.hogarama.fluentd.imageStream.base.name }}:{{ .Values.hogarama.fluentd.imageStream.base.tag }}'
     type: Docker
   triggers:
     - imageChange:

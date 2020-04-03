@@ -11,7 +11,7 @@ spec:
     clientId: "hogarama"
     protocol: "openid-connect"
     baseUrl: "/auth/realms/gepardec/hogarama"
-    secret: "{{ .Values.client.secret }}"
+    secret: "{{ .Values.keycloak.client.secret }}"
     redirectUris: ["*"]
     identityProvider: google
   realmSelector:

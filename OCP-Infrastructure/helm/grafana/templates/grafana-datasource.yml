@@ -11,7 +11,7 @@ spec:
         timeInterval: 5s
       name: prometheus
       type: prometheus
-      url: {{ .Values.DataSource.url }}
+      url: {{ .Values.hogarama.grafana.DataSource.url }}
       version: 1
       tlsSkipVerify: true
   name: grafana-datasources.yaml

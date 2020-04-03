@@ -14,8 +14,8 @@ spec:
       level: warn
       mode: console
     security:
-      admin_password: {{ .Values.crd.initial.admin.password }}
-      admin_user: {{ .Values.crd.initial.admin.user }}
+      admin_password: {{ .Values.hogarama.grafana.crd.initial.admin.password }}
+      admin_user: {{ .Values.hogarama.grafana.crd.initial.admin.user }}
   dashboardLabelSelector:
     - matchExpressions:
         - key: app

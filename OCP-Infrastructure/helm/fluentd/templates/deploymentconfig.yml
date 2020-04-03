@@ -24,7 +24,7 @@ spec:
         - env:
             - name: TZ
               value: {{ .Values.global.timezone }}
-          image: "{{ .Values.imageStream.name }}:latest"
+          image: "{{ .Values.hogarama.fluentd.imageStream.name }}:latest"
           imagePullPolicy: Always
           livenessProbe:
             exec:
@@ -78,7 +78,7 @@ spec:
           - fluentd
         from:
           kind: ImageStreamTag
-          name: '{{ .Values.imageStream.name }}:latest'
+          name: '{{ .Values.hogarama.fluentd.imageStream.name }}:latest'
       type: ImageChange
     - type: ConfigChange
 ...

@@ -18,6 +18,13 @@ readonly RESOURCE_ORDER=("keycloak-commons"
 # GLOBAL VARIABLES #
 ####################
 
+if resource == hogarama_commons
+    helm install hogarama-commons ${TOPLEVEL_DIR}/hogarama-commons -f secrets/values.yaml
+
+if resource == hogarama_amq
+    helm install hogarama_amq ${TOPLEVEL_DIR}/hogarama/charts/amq -f secrets/values.yaml
+
+
 FLAG_DRYRUN=false
 FLAG_QUIET=false
 FLAG_FORCE=false

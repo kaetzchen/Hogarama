@@ -1,6 +1,5 @@
 *.j2
 Chart.lock
-helm_prerequisites.sh
 scripts/
 secrets/
 

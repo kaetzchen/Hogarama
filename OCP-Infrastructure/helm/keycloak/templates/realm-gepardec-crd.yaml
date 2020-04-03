@@ -21,8 +21,8 @@ spec:
         "BrowserRedirectorIdentityProvider": "google",
         "config": {
           "alias": "google",
-          "clientId": "{{ .Values.google.client.id }}",
-          "clientSecret": "{{ .Values.google.client.secret }}"
+          "clientId": "{{ .Values.keycloak.google.client.id }}",
+          "clientSecret": "{{ .Values.keycloak.google.client.secret }}"
         }
       }
       ]

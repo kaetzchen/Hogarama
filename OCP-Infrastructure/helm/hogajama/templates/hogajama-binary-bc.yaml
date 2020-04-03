@@ -30,10 +30,10 @@ spec:
   triggers:
     - type: GitHub
       github:
-        secret: {{ .Values.trigger.secret.hogajama_binary.github }}
+        secret: {{ .Values.hogarama.hogajama.trigger.secret.hogajama_binary.github }}
     - type: Generic
       generic:
-        secret: {{ .Values.trigger.secret.hogajama_binary.generic }}
+        secret: {{ .Values.hogarama.hogajama.trigger.secret.hogajama_binary.generic }}
     - type: ConfigChange
     - type: ImageChange
   runPolicy: Serial

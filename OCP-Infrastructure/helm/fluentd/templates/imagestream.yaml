@@ -27,11 +27,11 @@ items:
       local: false
     tags:
     - from:
-        kind: {{ .Values.imageStream.base.kind }}
-        name: {{ .Values.imageStream.base.from }}
+        kind: {{ .Values.hogarama.fluentd.imageStream.base.kind }}
+        name: {{ .Values.hogarama.fluentd.imageStream.base.from }}
       generation: 1
       importPolicy: {}
-      name: {{ .Values.imageStream.base.tag }}
+      name: {{ .Values.hogarama.fluentd.imageStream.base.tag }}
       referencePolicy:
         type: Source
 ...

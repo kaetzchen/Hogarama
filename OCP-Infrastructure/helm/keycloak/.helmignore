@@ -1,10 +1,7 @@
 *.j2
 Chart.lock
-helm_prerequisites.sh
 scripts/
 secrets/
-realm_groups_users.json
-documentation.md
 
 # Patterns to ignore when building packages.
 # This supports shell glob matching, relative path matching, and
@@ -22,7 +19,6 @@ documentation.md
 *.swp
 *.bak
 *.tmp
-*.orig
 *~
 # Various IDEs
 .project

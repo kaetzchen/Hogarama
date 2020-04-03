@@ -21,7 +21,7 @@ hogarama:
         name: "amq-broker-72-openshift"
   fluentd:
     credentials:
-      mq:
+      amq:
         username: "{{ FLUENTD_USERNAME }}"
         password: "{{ FLUENTD_PASSWORD }}"
       db:
@@ -53,6 +53,8 @@ hogarama:
         hogajama_db: {{ HOGAJAMA_DB | b64encode }}
         mongodb_pw: {{ MONGODB_PW | b64encode }}
   hogajama:
+    keycloak:
+      server-url: {{ HOGAJAMA_KEYCLOAK_SERVER_URL }}
     trigger:
       secret:
         source_to_image:
