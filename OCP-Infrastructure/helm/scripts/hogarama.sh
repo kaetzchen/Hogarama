@@ -101,6 +101,14 @@ main() {
             extravars="${extravars} -e ${2}"
             shift 2
             ;;
+        --ns-hogarama)
+            namespace_hogarama="${2,,}"
+            shift 2
+            ;;
+        --ns-keycloak)
+            namespace_keycloak="${2,,}"
+            shift 2
+            ;;
         *)
           break
           ;;
