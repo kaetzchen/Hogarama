@@ -127,11 +127,10 @@ main() {
         exit 1
     fi
 
-    echo "dryrun: ${FLAG_DRYRUN}"
-    echo "quiet: ${FLAG_QUIET}"
-    echo "force: ${FLAG_FORCE}"
-
-
+    if [[ ${command} == "replace-secrets" ]];then
+        j2-template "${TOPLEVEL_DIR}" "helm" "${extravars}"
+        exit 0
+    fi
 }
 readonly -f main
 [ "$?" -eq "0" ] || return $?
