@@ -61,6 +61,7 @@ main() {
     local input=($@)
     local all_opts=(${input[@]:1})
     local extravars=""
+    local namespace=""
 
     local namespace_hogarama=hogarama
     local namespace_keycloak=gepardec
@@ -82,7 +83,7 @@ main() {
     while true ; do
         case "$1" in
         --resource)
-            resource=${2,,}
+            resources+=${2,,}
             shift 2
             ;;
         -d | --dryrun)
@@ -115,10 +116,7 @@ main() {
         esac
     done
 
-    #####
-    ### CHECK FOR SECRETS FILE
-    #####
-
+    ## CHECK FOR SECRETS FILE
     FILE=${TOPLEVEL_DIR}/helm/secrets/secrets.yaml
     if [[ ! -f "$FILE" ]]; then
         echo "#########################################################################"
@@ -129,16 +127,26 @@ main() {
         exit 1
     fi
 
+    ## CHECK LOGGED-IN STATUS ON CLUSTER
     rc="$(oc whoami > /dev/null 2>&1  ;echo $?)"
     if [[ rc -gt 0 ]]; then
         echo "You are not logged in to the OpenShift Cluster, please login and try again"
         exit 1
     fi
 
+    ## REPLACE SECRETS
     if [[ ${command} == "replace-secrets" ]];then
+        # überlegen, ob auch für einzelne Resourcen zu ermmöglichen?
         j2-template "${TOPLEVEL_DIR}" "helm" "${extravars}"
         exit 0
     fi
+
+    if [[ ${command} == "install" ]];then
+        helm-install "${resources[@]}"
+    fi
+
+
+    exit 0
 }
 readonly -f main
 [ "$?" -eq "0" ] || return $?

@@ -1,0 +1,57 @@
+#!/bin/bash
+
+function helm-install () {
+    local resources=${1}
+    local flag_dryrun=${FLAG_DRYRUN:-false}}
+    local flag_quiet=${FLAG_QUIET:-false}}
+    local flag_force=${FLAG_FORCE:-false}}
+
+    ## CHECK SPECIAL RESOURCES COMMANDS
+    if [[ " ${resources[@]} " =~ "hogarama-all" ]]; then
+        resources=("hogarama-commons" "amq" "fluentd" "prometheus" "grafana" "mongodb" "hogajama")
+    elif [[ " ${resources[@]} " =~ "keycloak-all" ]]; then
+        resources=("keycloak-commons" "commons")
+    elif  [[ " ${resources[@]} " =~ "all" ]]; then
+        resources=${RESOURCE_ORDER[@]}
+    fi
+
+    if [[ "${#resources}" -eq 0 ]]; then
+        usage_message
+        exit 1
+    fi
+
+    echo "resources: ${resources[@]}"
+
+    ## INSTALL
+    for item in ${RESOURCE_ORDER[@]}; do
+        if [[ " ${resources[@]} " =~ "${item}" ]]; then
+            # use correct namespace
+            echo "item: ${item}"
+            if [[ "${item}" == "keycloak-commons" ]] || [[ "${item}" == "keycloak" ]]; then
+                echo "assigning keycloak namespace"
+                namespace="${namespace_keycloak}"
+            else
+                echo "assigning hogarama namespace"
+                namespace="${namespace_hogarama}"
+            fi
+            echo "namespace: ${namespace}"
+            # handle existing helm chart installation
+            if [[ ${FLAG_FORCE} == "true" ]]; then
+                exec_command="helm install helm-${item} ${TOPLEVEL_DIR}/helm/${item} -n ${namespace} ${extravars} -f ${TOPLEVEL_DIR}/helm/secrets/values.yaml || helm upgrade helm-${item} ${TOPLEVEL_DIR}/helm/${item} -n ${namespace} ${extravars} -f ${TOPLEVEL_DIR}/secrets/values.yaml"
+            else
+                exec_command="helm install helm-${item} ${TOPLEVEL_DIR}/helm/${item} -n ${namespace} ${extravars} -f ${TOPLEVEL_DIR}/helm/secrets/values.yaml"
+            fi
+
+            execute "${exec_command}"
+            rc="$(echo $?)"
+            if [[ "${rc}" -gt 0 ]]; then
+                echo "Something went wrong trying to install resource ${item} in namespace ${namespace}"
+                exit 1
+            fi
+        fi
+    done
+}
+# readonly definition of a function throws an error if another function
+# with the same name is defined a second time
+readonly -f helm-install
+[ "$?" -eq "0" ] || return $?
