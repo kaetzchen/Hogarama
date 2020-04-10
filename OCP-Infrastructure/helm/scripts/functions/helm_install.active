@@ -1,12 +1,15 @@
 #!/bin/bash
 
 function helm-install () {
-    local resources=${1}
+    local resources=("${!1}")
+    echo ${resources[@]}
     local flag_dryrun=${FLAG_DRYRUN:-false}}
     local flag_quiet=${FLAG_QUIET:-false}}
     local flag_force=${FLAG_FORCE:-false}}
+    local secrets_file=${TOPLEVEL_DIR}/helm/secrets/values.yaml
 
     ## CHECK SPECIAL RESOURCES COMMANDS
+    echo "${resources[@]}"
     if [[ " ${resources[@]} " =~ "hogarama-all" ]]; then
         resources=("hogarama-commons" "amq" "fluentd" "prometheus" "grafana" "mongodb" "hogajama")
     elif [[ " ${resources[@]} " =~ "keycloak-all" ]]; then
@@ -16,33 +19,31 @@ function helm-install () {
     fi
 
     if [[ "${#resources}" -eq 0 ]]; then
+        echo "no resources for installation provided"
+        echo ""
         usage_message
         exit 1
     fi
-
-    echo "resources: ${resources[@]}"
 
     ## INSTALL
     for item in ${RESOURCE_ORDER[@]}; do
         if [[ " ${resources[@]} " =~ "${item}" ]]; then
             # use correct namespace
-            echo "item: ${item}"
             if [[ "${item}" == "keycloak-commons" ]] || [[ "${item}" == "keycloak" ]]; then
-                echo "assigning keycloak namespace"
                 namespace="${namespace_keycloak}"
             else
-                echo "assigning hogarama namespace"
                 namespace="${namespace_hogarama}"
             fi
-            echo "namespace: ${namespace}"
-            # handle existing helm chart installation
+
+            exec_command="helm install helm-${item} ${TOPLEVEL_DIR}/helm/${item} -n ${namespace} ${extravars} -f ${secrets_file}"
+            exec_command_force="helm upgrade helm-${item} ${TOPLEVEL_DIR}/helm/${item} -n ${namespace} ${extravars} -f ${secrets_file}"
+
             if [[ ${FLAG_FORCE} == "true" ]]; then
-                exec_command="helm install helm-${item} ${TOPLEVEL_DIR}/helm/${item} -n ${namespace} ${extravars} -f ${TOPLEVEL_DIR}/helm/secrets/values.yaml || helm upgrade helm-${item} ${TOPLEVEL_DIR}/helm/${item} -n ${namespace} ${extravars} -f ${TOPLEVEL_DIR}/secrets/values.yaml"
+                execute "${exec_command}" || execute "${exec_command_force}"
             else
-                exec_command="helm install helm-${item} ${TOPLEVEL_DIR}/helm/${item} -n ${namespace} ${extravars} -f ${TOPLEVEL_DIR}/helm/secrets/values.yaml"
+                execute "${exec_command}"
             fi
 
-            execute "${exec_command}"
             rc="$(echo $?)"
             if [[ "${rc}" -gt 0 ]]; then
                 echo "Something went wrong trying to install resource ${item} in namespace ${namespace}"

@@ -142,7 +142,7 @@ main() {
     fi
 
     if [[ ${command} == "install" ]];then
-        helm-install "${resources[@]}"
+        helm-install resources[@]
     fi
 
 
