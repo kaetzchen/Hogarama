@@ -1,8 +1,8 @@
 #!/bin/bash
 ## Function that provides helm installation and upgrade mechanism!
-function helm-install () {
-    local command="${1}"
-    local resources=("${!2}")
+function helm-template () {
+    local resources=("${!1}")
+    local output="${2:-false}"
     local flag_dryrun=${FLAG_DRYRUN:-false}}
     local flag_quiet=${FLAG_QUIET:-false}}
     local flag_force=${FLAG_FORCE:-false}}
@@ -13,12 +13,12 @@ function helm-install () {
         resources=("hogarama-commons" "amq" "fluentd" "prometheus" "grafana" "mongodb" "hogajama")
     elif [[ " ${resources[@]} " =~ "keycloak-all" ]]; then
         resources=("keycloak-commons" "commons")
-    elif  [[ " ${resources[@]} " =~ "all" ]]; then
+    elif  [[ " ${resources[@]} " =~ "all" ]] || [[ "${#resources}" -eq 0 ]]; then
         resources=${RESOURCE_ORDER[@]}
     fi
 
     if [[ "${#resources}" -eq 0 ]]; then
-        echo "no resources for ${command} operation provided"
+        echo "no resources for installation provided"
         echo ""
         usage_message
         exit 1
@@ -27,25 +27,17 @@ function helm-install () {
     ## INSTALL
     for item in ${RESOURCE_ORDER[@]}; do
         if [[ " ${resources[@]} " =~ "${item}" ]]; then
-            # use correct namespace
-            if [[ "${item}" == "keycloak-commons" ]] || [[ "${item}" == "keycloak" ]]; then
-                namespace="${namespace_keycloak}"
-            else
-                namespace="${namespace_hogarama}"
-            fi
+            exec_command="helm template ${TOPLEVEL_DIR}/helm/${item} -f ${secrets_file}"
 
-            exec_command="helm ${command} helm-${item} ${TOPLEVEL_DIR}/helm/${item} -n ${namespace} ${extravars} -f ${secrets_file}"
-            exec_command_force="helm upgrade helm-${item} ${TOPLEVEL_DIR}/helm/${item} -n ${namespace} ${extravars} -f ${secrets_file}"
-
-            if [[ ${FLAG_FORCE} == "true" ]] && [[ "${command}" == "install" ]]; then
-                execute "${exec_command}" 2>/dev/null || execute "${exec_command_force}"
-            else
+            if [[ "${output}" == "false" ]];then
                 execute "${exec_command}"
+            else
+                execute "${exec_command} --output-dir ${TOPLEVEL_DIR}/helm/secrets"
             fi
 
             rc="$(echo $?)"
             if [[ "${rc}" -gt 0 ]]; then
-                echo "Something went wrong trying to ${command} resource ${item} in namespace ${namespace}"
+                echo "Something went wrong trying to template resource ${item} check previous messages for more information"
                 exit 1
             fi
         fi
@@ -53,5 +45,5 @@ function helm-install () {
 }
 # readonly definition of a function throws an error if another function
 # with the same name is defined a second time
-readonly -f helm-install
+readonly -f helm-template
 [ "$?" -eq "0" ] || return $?
