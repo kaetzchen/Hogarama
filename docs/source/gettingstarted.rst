@@ -1,7 +1,6 @@
 Getting Started
 #################################
 
-
 Requirements
 ---------------
 
@@ -9,7 +8,7 @@ Requirements
 * Docker
 * our infrastructure secrets
 
-First off, in order to run Hogarama you need access to an OpenShift 4.0 cluster or above and be able to run docker on your workstation.
+In order to run Hogarama you need access to an OpenShift 4.0 cluster or above and to be able to run docker on your workstation.
 
 Why OpenShift 4.0 or above you ask? We are utilizing Operators which are GA since 4.0. Before OpenShift 4.0, version 3.11 offered Operators as TechPreview. However we do not count a Tech Preview feature as a sufficient requirement for our production setup.
 

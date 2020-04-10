@@ -21,7 +21,6 @@
    :alt: maintenance badge
    :align: left
 
-
 .. image:: https://www.gepardec.com/files/gepardec_logo_light_background@2000w.png
    :width: 100px
    :alt: gepardec
